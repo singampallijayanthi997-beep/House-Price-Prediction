@@ -1,0 +1,1571 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>House Price Prediction</title>
+
+
+    <style>
+
+        /* =====================================================
+           GENERAL
+        ===================================================== */
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+
+        body {
+
+            font-family: Arial, Helvetica, sans-serif;
+
+            background: linear-gradient(
+                135deg,
+                #eef5ff,
+                #f8fbff
+            );
+
+            min-height: 100vh;
+
+            color: #222;
+        }
+
+
+        /* =====================================================
+           HEADER
+        ===================================================== */
+
+        .header {
+
+            text-align: center;
+
+            padding: 45px 20px 30px;
+        }
+
+
+        .header-icon {
+
+            font-size: 55px;
+
+            margin-bottom: 10px;
+        }
+
+
+        .header h1 {
+
+            color: #174a7c;
+
+            font-size: 38px;
+
+            margin-bottom: 12px;
+        }
+
+
+        .header p {
+
+            color: #667085;
+
+            font-size: 17px;
+        }
+
+
+        /* =====================================================
+           MAIN CONTAINER
+        ===================================================== */
+
+        .container {
+
+            width: 92%;
+
+            max-width: 1050px;
+
+            margin: auto;
+
+            background: white;
+
+            border-radius: 20px;
+
+            padding: 35px;
+
+            box-shadow:
+                0 10px 30px rgba(
+                    0,
+                    0,
+                    0,
+                    0.08
+                );
+        }
+
+
+        /* =====================================================
+           SECTION TITLE
+        ===================================================== */
+
+        .section-title {
+
+            color: #174a7c;
+
+            font-size: 22px;
+
+            margin-bottom: 25px;
+
+            padding-bottom: 10px;
+
+            border-bottom: 2px solid #e5edf5;
+        }
+
+
+        /* =====================================================
+           FORM GRID
+        ===================================================== */
+
+        .form-grid {
+
+            display: grid;
+
+            grid-template-columns: repeat(
+                2,
+                1fr
+            );
+
+            gap: 22px;
+        }
+
+
+        .form-group {
+
+            display: flex;
+
+            flex-direction: column;
+        }
+
+
+        label {
+
+            font-weight: 600;
+
+            margin-bottom: 8px;
+
+            color: #344054;
+        }
+
+
+        input,
+        select {
+
+            width: 100%;
+
+            padding: 13px 14px;
+
+            border: 1px solid #d0d5dd;
+
+            border-radius: 9px;
+
+            font-size: 15px;
+
+            background: #ffffff;
+
+            transition: 0.2s;
+        }
+
+
+        input:focus,
+        select:focus {
+
+            outline: none;
+
+            border-color: #174a7c;
+
+            box-shadow:
+                0 0 0 3px rgba(
+                    23,
+                    74,
+                    124,
+                    0.12
+                );
+        }
+
+
+        /* =====================================================
+           BUTTONS
+        ===================================================== */
+
+        .button-container {
+
+            text-align: center;
+
+            margin-top: 35px;
+        }
+
+
+        button {
+
+            background: #174a7c;
+
+            color: white;
+
+            border: none;
+
+            padding: 15px 40px;
+
+            font-size: 17px;
+
+            font-weight: 600;
+
+            border-radius: 10px;
+
+            cursor: pointer;
+
+            transition: 0.2s;
+
+            box-shadow:
+                0 5px 12px rgba(
+                    23,
+                    74,
+                    124,
+                    0.25
+                );
+        }
+
+
+        button:hover {
+
+            background: #10385e;
+
+            transform: translateY(-2px);
+
+            box-shadow:
+                0 7px 15px rgba(
+                    23,
+                    74,
+                    124,
+                    0.3
+                );
+        }
+
+
+        /* =====================================================
+           RESET BUTTON
+        ===================================================== */
+
+        .reset-button {
+
+            margin-left: 12px;
+
+            background: #667085;
+
+            box-shadow:
+                0 5px 12px rgba(
+                    102,
+                    112,
+                    133,
+                    0.25
+                );
+        }
+
+
+        .reset-button:hover {
+
+            background: #475467;
+
+            transform: translateY(-2px);
+
+            box-shadow:
+                0 7px 15px rgba(
+                    102,
+                    112,
+                    133,
+                    0.3
+                );
+        }
+
+
+        /* =====================================================
+           ERROR
+        ===================================================== */
+
+        .error-result {
+
+            margin-top: 30px;
+
+            padding: 22px;
+
+            text-align: center;
+
+            background: #fff1f1;
+
+            border: 1px solid #f5c2c2;
+
+            border-radius: 14px;
+        }
+
+
+        .error-title {
+
+            color: #b42318;
+
+            font-size: 21px;
+
+            font-weight: 600;
+
+            margin-bottom: 10px;
+        }
+
+
+        .error-message {
+
+            color: #912018;
+
+            font-size: 15px;
+        }
+
+
+        /* =====================================================
+           PREDICTION RESULT
+        ===================================================== */
+
+        .result {
+
+            margin-top: 35px;
+
+            padding: 28px;
+
+            text-align: center;
+
+            background: #eef6ff;
+
+            border: 1px solid #d6e8fa;
+
+            border-radius: 14px;
+        }
+
+
+        .result-title {
+
+            color: #174a7c;
+
+            font-size: 22px;
+
+            margin-bottom: 12px;
+        }
+
+
+        .price {
+
+            color: #111827;
+
+            font-size: 34px;
+
+            font-weight: bold;
+        }
+
+
+        .result-message {
+
+            margin-top: 8px;
+
+            color: #667085;
+
+            font-size: 14px;
+        }
+
+
+        /* =====================================================
+           KEY FACTORS
+        ===================================================== */
+
+        .factors {
+
+            margin-top: 25px;
+
+            padding: 25px;
+
+            background: #ffffff;
+
+            border: 1px solid #d6e8fa;
+
+            border-radius: 14px;
+
+            text-align: left;
+        }
+
+
+        .factors-title {
+
+            color: #174a7c;
+
+            font-size: 20px;
+
+            font-weight: 600;
+
+            margin-bottom: 20px;
+
+            text-align: center;
+        }
+
+
+        .factors-grid {
+
+            display: grid;
+
+            grid-template-columns: repeat(
+                2,
+                1fr
+            );
+
+            gap: 14px;
+        }
+
+
+        .factor {
+
+            background: #f8fbff;
+
+            border: 1px solid #e5edf5;
+
+            border-radius: 10px;
+
+            padding: 15px;
+
+            color: #344054;
+
+            font-size: 15px;
+        }
+
+
+        .factor strong {
+
+            color: #174a7c;
+        }
+
+
+        /* =====================================================
+           MODEL PERFORMANCE
+        ===================================================== */
+
+        .performance {
+
+            margin-top: 25px;
+
+            padding: 25px;
+
+            background: #ffffff;
+
+            border: 1px solid #d6e8fa;
+
+            border-radius: 14px;
+
+            text-align: center;
+        }
+
+
+        .performance-title {
+
+            color: #174a7c;
+
+            font-size: 20px;
+
+            font-weight: 600;
+
+            margin-bottom: 8px;
+        }
+
+
+        .model-name {
+
+            color: #667085;
+
+            font-size: 14px;
+
+            margin-bottom: 20px;
+        }
+
+
+        .performance-grid {
+
+            display: grid;
+
+            grid-template-columns: repeat(
+                3,
+                1fr
+            );
+
+            gap: 15px;
+        }
+
+
+        .metric {
+
+            background: #f8fbff;
+
+            border: 1px solid #e5edf5;
+
+            border-radius: 10px;
+
+            padding: 18px 10px;
+        }
+
+
+        .metric-name {
+
+            color: #667085;
+
+            font-size: 14px;
+
+            margin-bottom: 8px;
+        }
+
+
+        .metric-value {
+
+            color: #174a7c;
+
+            font-size: 21px;
+
+            font-weight: bold;
+        }
+
+
+        /* =====================================================
+           ABOUT MODEL
+        ===================================================== */
+
+        .about-model {
+
+            margin-top: 25px;
+
+            padding: 28px;
+
+            background: #ffffff;
+
+            border: 1px solid #d6e8fa;
+
+            border-radius: 14px;
+
+            text-align: center;
+        }
+
+
+        .about-title {
+
+            color: #174a7c;
+
+            font-size: 21px;
+
+            font-weight: 600;
+
+            margin-bottom: 12px;
+        }
+
+
+        .about-description {
+
+            color: #667085;
+
+            font-size: 15px;
+
+            line-height: 1.7;
+
+            max-width: 800px;
+
+            margin: 0 auto 25px;
+        }
+
+
+        .about-grid {
+
+            display: grid;
+
+            grid-template-columns: repeat(
+                4,
+                1fr
+            );
+
+            gap: 14px;
+        }
+
+
+        .about-card {
+
+            background: #f8fbff;
+
+            border: 1px solid #e5edf5;
+
+            border-radius: 10px;
+
+            padding: 18px 12px;
+        }
+
+
+        .about-icon {
+
+            font-size: 25px;
+
+            margin-bottom: 8px;
+        }
+
+
+        .about-label {
+
+            color: #667085;
+
+            font-size: 13px;
+
+            margin-bottom: 6px;
+        }
+
+
+        .about-value {
+
+            color: #174a7c;
+
+            font-weight: 600;
+
+            font-size: 15px;
+        }
+
+
+        /* =====================================================
+           WORKFLOW
+        ===================================================== */
+
+        .workflow {
+
+            margin-top: 25px;
+
+            padding: 25px;
+
+            background: #f8fbff;
+
+            border: 1px solid #d6e8fa;
+
+            border-radius: 14px;
+
+            text-align: center;
+        }
+
+
+        .workflow-title {
+
+            color: #174a7c;
+
+            font-size: 20px;
+
+            font-weight: 600;
+
+            margin-bottom: 20px;
+        }
+
+
+        .workflow-text {
+
+            color: #344054;
+
+            font-size: 15px;
+
+            line-height: 2;
+        }
+
+
+        .workflow-step {
+
+            font-weight: 600;
+
+            color: #174a7c;
+        }
+
+
+        /* =====================================================
+           FOOTER
+        ===================================================== */
+
+        .footer {
+
+            text-align: center;
+
+            padding: 25px;
+
+            color: #667085;
+
+            font-size: 14px;
+        }
+
+
+        /* =====================================================
+           RESPONSIVE
+        ===================================================== */
+
+        @media (max-width: 800px) {
+
+            .about-grid {
+
+                grid-template-columns: repeat(
+                    2,
+                    1fr
+                );
+            }
+        }
+
+
+        @media (max-width: 700px) {
+
+            .form-grid {
+
+                grid-template-columns: 1fr;
+            }
+
+
+            .factors-grid {
+
+                grid-template-columns: 1fr;
+            }
+
+
+            .performance-grid {
+
+                grid-template-columns: 1fr;
+            }
+
+
+            .about-grid {
+
+                grid-template-columns: 1fr;
+            }
+
+
+            .container {
+
+                width: 94%;
+
+                padding: 22px;
+            }
+
+
+            .header h1 {
+
+                font-size: 29px;
+            }
+
+
+            .header-icon {
+
+                font-size: 45px;
+            }
+
+
+            .price {
+
+                font-size: 28px;
+            }
+
+
+            .reset-button {
+
+                margin-left: 0;
+
+                margin-top: 12px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- =====================================================
+         HEADER
+    ====================================================== -->
+
+    <div class="header">
+
+        <div class="header-icon">
+            🏠
+        </div>
+
+        <h1>
+            House Price Prediction
+        </h1>
+
+        <p>
+            Machine Learning based House Price Prediction System
+        </p>
+
+    </div>
+
+
+    <!-- =====================================================
+         MAIN CONTAINER
+    ====================================================== -->
+
+    <div class="container">
+
+
+        <h2 class="section-title">
+            Enter House Details
+        </h2>
+
+
+        <!-- =================================================
+             FORM
+        ================================================== -->
+
+        <form
+            method="POST"
+            action="/predict"
+        >
+
+
+            <div class="form-grid">
+
+
+                <!-- Overall Quality -->
+
+                <div class="form-group">
+
+                    <label for="OverallQual">
+                        Overall Quality
+                    </label>
+
+                    <input
+                        type="number"
+                        id="OverallQual"
+                        name="OverallQual"
+                        min="1"
+                        max="10"
+                        value="7"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- Living Area -->
+
+                <div class="form-group">
+
+                    <label for="GrLivArea">
+                        Living Area (sq ft)
+                    </label>
+
+                    <input
+                        type="number"
+                        id="GrLivArea"
+                        name="GrLivArea"
+                        min="1"
+                        value="1800"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- Garage Cars -->
+
+                <div class="form-group">
+
+                    <label for="GarageCars">
+                        Garage Cars
+                    </label>
+
+                    <input
+                        type="number"
+                        id="GarageCars"
+                        name="GarageCars"
+                        min="0"
+                        max="5"
+                        value="2"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- Garage Area -->
+
+                <div class="form-group">
+
+                    <label for="GarageArea">
+                        Garage Area (sq ft)
+                    </label>
+
+                    <input
+                        type="number"
+                        id="GarageArea"
+                        name="GarageArea"
+                        min="0"
+                        value="500"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- Basement -->
+
+                <div class="form-group">
+
+                    <label for="TotalBsmtSF">
+                        Total Basement Area (sq ft)
+                    </label>
+
+                    <input
+                        type="number"
+                        id="TotalBsmtSF"
+                        name="TotalBsmtSF"
+                        min="0"
+                        value="1000"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- First Floor -->
+
+                <div class="form-group">
+
+                    <label for="1stFlrSF">
+                        First Floor Area (sq ft)
+                    </label>
+
+                    <input
+                        type="number"
+                        id="1stFlrSF"
+                        name="1stFlrSF"
+                        min="1"
+                        value="1000"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- Bathrooms -->
+
+                <div class="form-group">
+
+                    <label for="FullBath">
+                        Full Bathrooms
+                    </label>
+
+                    <input
+                        type="number"
+                        id="FullBath"
+                        name="FullBath"
+                        min="0"
+                        max="5"
+                        value="2"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- Rooms -->
+
+                <div class="form-group">
+
+                    <label for="TotRmsAbvGrd">
+                        Total Rooms Above Ground
+                    </label>
+
+                    <input
+                        type="number"
+                        id="TotRmsAbvGrd"
+                        name="TotRmsAbvGrd"
+                        min="1"
+                        max="20"
+                        value="7"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- Year -->
+
+                <div class="form-group">
+
+                    <label for="YearBuilt">
+                        Year Built
+                    </label>
+
+                    <input
+                        type="number"
+                        id="YearBuilt"
+                        name="YearBuilt"
+                        min="1800"
+                        max="2026"
+                        value="2005"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- Neighborhood -->
+
+                <div class="form-group">
+
+                    <label for="Neighborhood">
+                        Neighborhood
+                    </label>
+
+                    <select
+                        id="Neighborhood"
+                        name="Neighborhood"
+                        required
+                    >
+
+                        <option value="CollgCr">
+                            CollgCr
+                        </option>
+
+                        <option value="NAmes">
+                            NAmes
+                        </option>
+
+                        <option value="OldTown">
+                            OldTown
+                        </option>
+
+                        <option value="Edwards">
+                            Edwards
+                        </option>
+
+                        <option value="Somerst">
+                            Somerst
+                        </option>
+
+                        <option value="NridgHt">
+                            NridgHt
+                        </option>
+
+                        <option value="Gilbert">
+                            Gilbert
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- Kitchen -->
+
+                <div class="form-group">
+
+                    <label for="KitchenQual">
+                        Kitchen Quality
+                    </label>
+
+                    <select
+                        id="KitchenQual"
+                        name="KitchenQual"
+                        required
+                    >
+
+                        <option value="Gd">
+                            Gd - Good
+                        </option>
+
+                        <option value="Ex">
+                            Ex - Excellent
+                        </option>
+
+                        <option value="TA">
+                            TA - Typical/Average
+                        </option>
+
+                        <option value="Fa">
+                            Fa - Fair
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+            </div>
+
+
+            <!-- =================================================
+                 BUTTONS
+            ================================================== -->
+
+            <div class="button-container">
+
+                <button type="submit">
+
+                    🔮 Predict House Price
+
+                </button>
+
+
+                <button
+                    type="reset"
+                    class="reset-button"
+                >
+
+                    🔄 Reset Form
+
+                </button>
+
+            </div>
+
+
+            <!-- =================================================
+                 ERROR
+            ================================================== -->
+
+            {% if error %}
+
+            <div class="error-result">
+
+                <div class="error-title">
+
+                    ⚠️ Invalid Input
+
+                </div>
+
+                <div class="error-message">
+
+                    {{ error }}
+
+                </div>
+
+            </div>
+
+            {% endif %}
+
+
+            <!-- =================================================
+                 PREDICTION
+            ================================================== -->
+
+            {% if prediction %}
+
+            <div class="result">
+
+
+                <div class="result-title">
+
+                    🏠 Predicted House Price
+
+                </div>
+
+
+                <div class="price">
+
+                    {{ prediction }}
+
+                </div>
+
+
+                <div class="result-message">
+
+                    Estimated using the trained XGBoost
+                    Machine Learning model.
+
+                </div>
+
+
+                <!-- =================================================
+                     KEY FACTORS
+                ================================================== -->
+
+                <div class="factors">
+
+                    <div class="factors-title">
+
+                        📊 Key House Factors
+
+                    </div>
+
+
+                    <div class="factors-grid">
+
+
+                        <div class="factor">
+
+                            ⭐ <strong>Overall Quality:</strong>
+
+                            {{ request.form.get(
+                                'OverallQual',
+                                'N/A'
+                            ) }}/10
+
+                        </div>
+
+
+                        <div class="factor">
+
+                            📐 <strong>Living Area:</strong>
+
+                            {{ request.form.get(
+                                'GrLivArea',
+                                'N/A'
+                            ) }} sq ft
+
+                        </div>
+
+
+                        <div class="factor">
+
+                            🚗 <strong>Garage Capacity:</strong>
+
+                            {{ request.form.get(
+                                'GarageCars',
+                                'N/A'
+                            ) }} cars
+
+                        </div>
+
+
+                        <div class="factor">
+
+                            🛁 <strong>Full Bathrooms:</strong>
+
+                            {{ request.form.get(
+                                'FullBath',
+                                'N/A'
+                            ) }}
+
+                        </div>
+
+
+                        <div class="factor">
+
+                            🏘️ <strong>Neighborhood:</strong>
+
+                            {{ request.form.get(
+                                'Neighborhood',
+                                'N/A'
+                            ) }}
+
+                        </div>
+
+
+                        <div class="factor">
+
+                            📅 <strong>Year Built:</strong>
+
+                            {{ request.form.get(
+                                'YearBuilt',
+                                'N/A'
+                            ) }}
+
+                        </div>
+
+
+                    </div>
+
+                </div>
+
+
+                <!-- =================================================
+                     MODEL PERFORMANCE
+                ================================================== -->
+
+                <div class="performance">
+
+                    <div class="performance-title">
+
+                        🤖 Model Performance
+
+                    </div>
+
+
+                    <div class="model-name">
+
+                        Trained XGBoost Regression Model
+
+                    </div>
+
+
+                    <div class="performance-grid">
+
+
+                        <div class="metric">
+
+                            <div class="metric-name">
+
+                                R² Score
+
+                            </div>
+
+                            <div class="metric-value">
+
+                                91.23%
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="metric">
+
+                            <div class="metric-name">
+
+                                MAE
+
+                            </div>
+
+                            <div class="metric-value">
+
+                                ₹15,730.89
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="metric">
+
+                            <div class="metric-name">
+
+                                RMSE
+
+                            </div>
+
+                            <div class="metric-value">
+
+                                ₹25,942.49
+
+                            </div>
+
+                        </div>
+
+
+                    </div>
+
+                </div>
+
+
+                <!-- =================================================
+                     ABOUT THE MODEL
+                ================================================== -->
+
+                <div class="about-model">
+
+
+                    <div class="about-title">
+
+                        🤖 About This Model
+
+                    </div>
+
+
+                    <div class="about-description">
+
+                        This application uses an
+                        <strong>XGBoost Regression</strong>
+                        model to estimate the selling price
+                        of a house based on its characteristics.
+
+                        The input data is preprocessed,
+                        categorical features are converted using
+                        One-Hot Encoding, and the processed
+                        data is passed to the trained model
+                        to generate the estimated house price.
+
+                    </div>
+
+
+                    <div class="about-grid">
+
+
+                        <!-- Dataset -->
+
+                        <div class="about-card">
+
+                            <div class="about-icon">
+
+                                📊
+
+                            </div>
+
+                            <div class="about-label">
+
+                                Dataset
+
+                            </div>
+
+                            <div class="about-value">
+
+                                House Price Dataset
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- Algorithm -->
+
+                        <div class="about-card">
+
+                            <div class="about-icon">
+
+                                🧠
+
+                            </div>
+
+                            <div class="about-label">
+
+                                Algorithm
+
+                            </div>
+
+                            <div class="about-value">
+
+                                XGBoost Regression
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- Features -->
+
+                        <div class="about-card">
+
+                            <div class="about-icon">
+
+                                🔢
+
+                            </div>
+
+                            <div class="about-label">
+
+                                Features
+
+                            </div>
+
+                            <div class="about-value">
+
+                                80 Original Features
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- Target -->
+
+                        <div class="about-card">
+
+                            <div class="about-icon">
+
+                                🎯
+
+                            </div>
+
+                            <div class="about-label">
+
+                                Target
+
+                            </div>
+
+                            <div class="about-value">
+
+                                House Sale Price
+
+                            </div>
+
+                        </div>
+
+
+                    </div>
+
+
+                </div>
+
+
+                <!-- =================================================
+                     ML WORKFLOW
+                ================================================== -->
+
+                <div class="workflow">
+
+
+                    <div class="workflow-title">
+
+                        🔄 Prediction Workflow
+
+                    </div>
+
+
+                    <div class="workflow-text">
+
+                        <span class="workflow-step">
+                            House Details
+                        </span>
+
+                        →
+
+                        <span class="workflow-step">
+                            Preprocessing
+                        </span>
+
+                        →
+
+                        <span class="workflow-step">
+                            One-Hot Encoding
+                        </span>
+
+                        →
+
+                        <span class="workflow-step">
+                            XGBoost Model
+                        </span>
+
+                        →
+
+                        <span class="workflow-step">
+                            Predicted Price
+                        </span>
+
+                    </div>
+
+
+                </div>
+
+
+            </div>
+
+            {% endif %}
+
+
+        </form>
+
+
+    </div>
+
+
+    <!-- =====================================================
+         FOOTER
+    ====================================================== -->
+
+    <div class="footer">
+
+        House Price Prediction System |
+        Machine Learning Project
+
+    </div>
+
+
+</body>
+
+</html>
