@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect
 import pandas as pd
 import numpy as np
 import xgboost as xgb
@@ -109,11 +109,9 @@ print("Number of categorical columns:", len(categorical_columns))
 # ============================================================
 # HOME PAGE
 # ============================================================
-
 @app.route("/")
 def home():
-
-    return render_template("index.html")
+    return redirect("/predict")
 
 # ============================================================
 # PREDICTION ROUTE
